@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertSurveySchema } from "@shared/schema";
+import { insertSurveySchema, type InsertSurvey } from "@shared/schema";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function Survey() {
   const { toast } = useToast();
-  const form = useForm({
+  const form = useForm<InsertSurvey>({
     resolver: zodResolver(insertSurveySchema),
     defaultValues: {
       name: "",
@@ -59,7 +59,7 @@ export default function Survey() {
   });
 
   const submitMutation = useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async (data: InsertSurvey) => {
       const response = await apiRequest("POST", "/api/surveys", data);
       return response.json();
     },
@@ -79,7 +79,7 @@ export default function Survey() {
     }
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: InsertSurvey) => {
     submitMutation.mutate(data);
   };
 
@@ -90,7 +90,7 @@ export default function Survey() {
           <h1 className="text-2xl font-bold text-center mb-8">
             Field Monitoring and Evaluation Form
           </h1>
-          
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               {/* Beneficiary Information */}
@@ -98,7 +98,7 @@ export default function Survey() {
                 <h2 className="text-lg font-semibold bg-primary text-primary-foreground p-2">
                   Beneficiary Information
                 </h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>
@@ -124,7 +124,7 @@ export default function Survey() {
                 <h2 className="text-lg font-semibold bg-primary text-primary-foreground p-2 mt-8">
                   Project Efficiency
                 </h2>
-                
+
                 <div className="space-y-4">
                   <Label>Is the quantity sufficient/enough?</Label>
                   <RadioGroup
